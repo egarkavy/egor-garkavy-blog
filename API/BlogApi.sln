@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogApi", "BlogApi\BlogApi.csproj", "{BD3D1236-967E-43F0-A5B3-FC2DC9759130}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogApi.Services", "BlogApi.Services\BlogApi.Services.csproj", "{A4C8C92C-7809-4891-AA62-5A176E6C8A37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD3D1236-967E-43F0-A5B3-FC2DC9759130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3D1236-967E-43F0-A5B3-FC2DC9759130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3D1236-967E-43F0-A5B3-FC2DC9759130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3D1236-967E-43F0-A5B3-FC2DC9759130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C8C92C-7809-4891-AA62-5A176E6C8A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C8C92C-7809-4891-AA62-5A176E6C8A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C8C92C-7809-4891-AA62-5A176E6C8A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C8C92C-7809-4891-AA62-5A176E6C8A37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4CA04E1C-5359-4221-9835-F1A6926F57A5}
+	EndGlobalSection
+EndGlobal

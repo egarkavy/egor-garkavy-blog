@@ -1,0 +1,6 @@
+{
+  "connectionStrings": {
+    "CityNavigatorConnection": "mongodb://localhost:27017/places"
+  },
+  "CityNavigatorDatabaseName": "places"
+}
