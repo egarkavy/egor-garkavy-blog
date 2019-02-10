@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityNavigatorApi.Controllers
@@ -39,6 +41,20 @@ namespace CityNavigatorApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetLogin()
+        {
+            return Ok($"Ваш логин: {User.Identity.Name}");
+        }
+
+        [Authorize(Roles = "admin")]
+        [Route("getrole")]
+        public IActionResult GetRole()
+        {
+            return Ok("Ваша роль: администратор");
         }
     }
 }

@@ -9,9 +9,13 @@ using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using BlogApi.Services.Models;
+using BlogApi.Services;
+using System.Net;
+using Microsoft.AspNetCore.Cors;
 
 namespace TokenApp.Controllers
 {
+    [Route("api/[controller]")]
     public class AccountController : Controller
     {
         private List<User> people = new List<User>
@@ -20,16 +24,26 @@ namespace TokenApp.Controllers
             new User { Login="qwerty", Password="55555", Role = "user" }
         };
 
-        [HttpPost("/token")]
-        public async Task Token()
+        [HttpGet("Hello")]
+        public string Hello()
         {
-            var username = Request.Form["username"];
-            var password = Request.Form["password"];
+            return "asdddd";
+        }
+        public class Form
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
+        }
+        [HttpPost("Token")]
+        public async Task Token([FromBody]Form form)
+        {
+            var username = form.UserName;
+            var password = form.Password;
 
             var identity = GetIdentity(username, password);
             if (identity == null)
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 await Response.WriteAsync("Invalid username or password.");
                 return;
             }
@@ -37,12 +51,12 @@ namespace TokenApp.Controllers
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
+                    issuer: Constants.ISSUER,
+                    audience: Constants.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    expires: now.Add(TimeSpan.FromMinutes(Constants.LIFETIME)),
+                    signingCredentials: new SigningCredentials(Constants.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
