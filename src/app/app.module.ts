@@ -9,13 +9,15 @@ import { HomeComponent } from './home/home.component';
 
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
+import { FormsModule } from '@angular/forms'
 @NgModule({
   imports: [
     BrowserModule, 
     RouterModule.forRoot(routes), 
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   declarations: [
     AppComponent,
