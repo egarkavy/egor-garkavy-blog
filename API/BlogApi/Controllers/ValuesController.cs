@@ -44,17 +44,18 @@ namespace CityNavigatorApi.Controllers
         }
 
         [Authorize]
+        [Route("getlogin")]
         [HttpGet]
         public IActionResult GetLogin()
         {
-            return Ok($"Ваш логин: {User.Identity.Name}");
+            return Json($"Ваш логин: {User.Identity.Name}");
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, allowAll")]
         [Route("getrole")]
         public IActionResult GetRole()
         {
-            return Ok("Ваша роль: администратор");
+            return Json("Ваша роль: администратор");
         }
     }
 }

@@ -20,7 +20,7 @@ namespace TokenApp.Controllers
     {
         private List<User> people = new List<User>
         {
-            new User {Login="admin@gmail.com", Password="12345", Role = "admin" },
+            new User {Login="admin@gmail.com", Password="12345", Role = "admin", Role2 = "allowAll" },
             new User { Login="qwerty", Password="55555", Role = "user" }
         };
 
@@ -51,9 +51,9 @@ namespace TokenApp.Controllers
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
-                    issuer: Constants.ISSUER,
-                    audience: Constants.AUDIENCE,
-                    notBefore: now,
+                    //issuer: Constants.ISSUER,
+                    //audience: Constants.AUDIENCE,
+                    //notBefore: now,
                     claims: identity.Claims,
                     expires: now.Add(TimeSpan.FromMinutes(Constants.LIFETIME)),
                     signingCredentials: new SigningCredentials(Constants.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
@@ -78,11 +78,15 @@ namespace TokenApp.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role2)
                 };
                 ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
+                new ClaimsIdentity(claims, "Token"
+                ,
+                ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType
+                );
                 return claimsIdentity;
             }
 

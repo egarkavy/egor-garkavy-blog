@@ -45,14 +45,14 @@ namespace CityNavigatorApi
                        options.TokenValidationParameters = new TokenValidationParameters
                        {
                             // укзывает, будет ли валидироваться издатель при валидации токена
-                            ValidateIssuer = true,
+                            ValidateIssuer = false,
                             // строка, представляющая издателя
-                            ValidIssuer = Constants.ISSUER,
+                            //ValidIssuer = Constants.ISSUER,
 
                             // будет ли валидироваться потребитель токена
-                            ValidateAudience = true,
+                            ValidateAudience = false,
                             // установка потребителя токена
-                            ValidAudience = Constants.AUDIENCE,
+                            //ValidAudience = Constants.AUDIENCE,
                             // будет ли валидироваться время существования
                             ValidateLifetime = true,
 
