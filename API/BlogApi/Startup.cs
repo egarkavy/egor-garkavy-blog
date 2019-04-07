@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BlogApi.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using System.Security.Claims;
 
 namespace CityNavigatorApi
 {
@@ -45,14 +46,14 @@ namespace CityNavigatorApi
                        options.TokenValidationParameters = new TokenValidationParameters
                        {
                             // укзывает, будет ли валидироваться издатель при валидации токена
-                            ValidateIssuer = false,
+                            ValidateIssuer = true,
                             // строка, представляющая издателя
-                            //ValidIssuer = Constants.ISSUER,
+                            ValidIssuer = Constants.ISSUER,
 
                             // будет ли валидироваться потребитель токена
-                            ValidateAudience = false,
+                            ValidateAudience = true,
                             // установка потребителя токена
-                            //ValidAudience = Constants.AUDIENCE,
+                            ValidAudience = Constants.AUDIENCE,
                             // будет ли валидироваться время существования
                             ValidateLifetime = true,
 
@@ -60,6 +61,7 @@ namespace CityNavigatorApi
                             IssuerSigningKey = Constants.GetSymmetricSecurityKey(),
                             // валидация ключа безопасности
                             ValidateIssuerSigningKey = true,
+                            ClockSkew = TimeSpan.Zero
                        };
                    });
 

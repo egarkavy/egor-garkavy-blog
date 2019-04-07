@@ -47,15 +47,15 @@ namespace TokenApp.Controllers
                 await Response.WriteAsync("Invalid username or password.");
                 return;
             }
-
+            
             var now = DateTime.UtcNow;
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
                     //issuer: Constants.ISSUER,
                     //audience: Constants.AUDIENCE,
-                    //notBefore: now,
+                    notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(Constants.LIFETIME)),
+                    expires: now.AddMinutes(1),
                     signingCredentials: new SigningCredentials(Constants.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
@@ -75,18 +75,19 @@ namespace TokenApp.Controllers
             User user = people.FirstOrDefault(x => x.Login == username && x.Password == password);
             if (user != null)
             {
+                
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role2)
                 };
+
                 ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token"
-                ,
-                ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType
-                );
+                    new ClaimsIdentity(claims, "Token"
+                    //, 
+                    //ClaimsIdentity.DefaultNameClaimType,
+                    //myRole
+                    );
                 return claimsIdentity;
             }
 

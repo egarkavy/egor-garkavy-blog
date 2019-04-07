@@ -29,7 +29,7 @@ export class HomeComponent{
             debugger;
             sessionStorage.setItem(tokenKey, x.access_token);
 
-            this.http.get<any>("http://localhost:60000/api/values/GetLogin", {
+            this.http.get<any>("http://localhost:60000/api/values/GetRole", {
                     headers: {
                         Authorization: "Bearer " + sessionStorage.getItem(tokenKey)
                 }})

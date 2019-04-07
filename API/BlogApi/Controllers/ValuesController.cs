@@ -51,7 +51,7 @@ namespace CityNavigatorApi.Controllers
             return Json($"Ваш логин: {User.Identity.Name}");
         }
 
-        [Authorize(Roles = "admin, allowAll")]
+        [Authorize(Roles = "admin")]
         [Route("getrole")]
         public IActionResult GetRole()
         {
