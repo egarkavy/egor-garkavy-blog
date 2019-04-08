@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using BlogApi.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using System.Security.Claims;
+using BlogApi.Common.Tokens;
 
 namespace CityNavigatorApi
 {
@@ -88,6 +89,7 @@ namespace CityNavigatorApi
         {
             services.AddTransient<IMongoRepository, Repository>();
             services.AddTransient<IMongoContext, MongoContext>();
+            services.AddTransient<IRefreshTokenRepository, MemoryRefreshTokenRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

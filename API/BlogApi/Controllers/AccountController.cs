@@ -13,7 +13,7 @@ using BlogApi.Services;
 using System.Net;
 using Microsoft.AspNetCore.Cors;
 using BlogApi.Services.Helpers.Tokens;
-using BlogApi.Common.JWT;
+using BlogApi.Common.Tokens;
 
 namespace TokenApp.Controllers
 {
@@ -57,17 +57,8 @@ namespace TokenApp.Controllers
                 await Response.WriteAsync("Invalid username or password.");
                 return;
             }
-            
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                    //issuer: Constants.ISSUER,
-                    //audience: Constants.AUDIENCE,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.AddMinutes(1),
-                    signingCredentials: new SigningCredentials(Constants.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var encodedJwt = JwtHelper.GenerateToken(identity.Claims);
 
             var response = new
             {
@@ -83,16 +74,16 @@ namespace TokenApp.Controllers
         [HttpPost]
         public IActionResult Refresh(string token, string refreshToken)
         {
-            var principal = JWTHelper.GetPrincipalFromExpiredToken(token);
+            var principal = JwtHelper.GetPrincipalFromExpiredToken(token);
             var username = principal.Identity.Name;
-            var savedRefreshToken = GetRefreshToken(username); //retrieve the refresh token from a data store
+            var savedRefreshToken = _refreshTokenRepository.Get(username); //retrieve the refresh token from a data store
             if (savedRefreshToken != refreshToken)
                 throw new SecurityTokenException("Invalid refresh token");
 
-            var newJwtToken = GenerateToken(principal.Claims);
-            var newRefreshToken = GenerateRefreshToken();
-            DeleteRefreshToken(username, refreshToken);
-            SaveRefreshToken(username, newRefreshToken);
+            var newJwtToken = JwtHelper.GenerateToken(principal.Claims);
+            var newRefreshToken = RefreshTokenHelper.GenerateRefreshToken();
+            _refreshTokenRepository.Delete(username, refreshToken);
+            _refreshTokenRepository.Save(username, newRefreshToken);
 
             return new ObjectResult(new
             {
@@ -114,11 +105,8 @@ namespace TokenApp.Controllers
                 };
 
                 ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(claims, "Token"
-                    //, 
-                    //ClaimsIdentity.DefaultNameClaimType,
-                    //myRole
-                    );
+                    new ClaimsIdentity(claims, "Token");
+
                 return claimsIdentity;
             }
 

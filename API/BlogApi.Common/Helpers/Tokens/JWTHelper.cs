@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BlogApi.Services.Helpers.Tokens
 {
-    public static class JWTHelper
+    public static class JwtHelper
     {
         public static ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
@@ -28,6 +28,22 @@ namespace BlogApi.Services.Helpers.Tokens
                 throw new SecurityTokenException("Invalid token");
 
             return principal;
+        }
+
+        public static string GenerateToken(IEnumerable<Claim> claims)
+        {
+            var now = DateTime.UtcNow;
+
+            var jwt = new JwtSecurityToken(
+                    issuer: Constants.ISSUER,
+                    audience: Constants.AUDIENCE,
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.AddMinutes(1),
+                    signingCredentials: new SigningCredentials(Constants.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return encodedJwt;
         }
     }
 }
