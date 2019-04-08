@@ -59,10 +59,12 @@ namespace TokenApp.Controllers
             }
 
             var encodedJwt = JwtHelper.GenerateToken(identity.Claims);
+            var refreshToken = RefreshTokenHelper.GenerateRefreshToken();
 
             var response = new
             {
-                access_token = encodedJwt,
+                accessToken = encodedJwt,
+                refreshToken = refreshToken,
                 username = identity.Name
             };
             
