@@ -12,17 +12,27 @@ using BlogApi.Services.Models;
 using BlogApi.Services;
 using System.Net;
 using Microsoft.AspNetCore.Cors;
+using BlogApi.Services.Helpers.Tokens;
+using BlogApi.Common.JWT;
 
 namespace TokenApp.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+
+        public AccountController(IRefreshTokenRepository refreshTokenRepository)
+        {
+            _refreshTokenRepository = refreshTokenRepository;
+        }
+
         private List<User> people = new List<User>
         {
             new User {Login="admin@gmail.com", Password="12345", Role = "admin", Role2 = "allowAll" },
             new User { Login="qwerty", Password="55555", Role = "user" }
         };
+        
 
         [HttpGet("Hello")]
         public string Hello()
@@ -68,6 +78,27 @@ namespace TokenApp.Controllers
             // сериализация ответа
             Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+        }
+
+        [HttpPost]
+        public IActionResult Refresh(string token, string refreshToken)
+        {
+            var principal = JWTHelper.GetPrincipalFromExpiredToken(token);
+            var username = principal.Identity.Name;
+            var savedRefreshToken = GetRefreshToken(username); //retrieve the refresh token from a data store
+            if (savedRefreshToken != refreshToken)
+                throw new SecurityTokenException("Invalid refresh token");
+
+            var newJwtToken = GenerateToken(principal.Claims);
+            var newRefreshToken = GenerateRefreshToken();
+            DeleteRefreshToken(username, refreshToken);
+            SaveRefreshToken(username, newRefreshToken);
+
+            return new ObjectResult(new
+            {
+                token = newJwtToken,
+                refreshToken = newRefreshToken
+            });
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
