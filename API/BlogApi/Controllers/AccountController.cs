@@ -44,8 +44,9 @@ namespace TokenApp.Controllers
             public string UserName { get; set; }
             public string Password { get; set; }
         }
+
         [HttpPost("Token")]
-        public async Task Token([FromBody]Form form)
+        public JsonResult Token([FromBody]Form form)
         {
             var username = form.UserName;
             var password = form.Password;
@@ -54,8 +55,7 @@ namespace TokenApp.Controllers
             if (identity == null)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await Response.WriteAsync("Invalid username or password.");
-                return;
+                return Json("Invalid username or password.");
             }
 
             var encodedJwt = JwtHelper.GenerateToken(identity.Claims);
@@ -65,14 +65,12 @@ namespace TokenApp.Controllers
                 access_token = encodedJwt,
                 username = identity.Name
             };
-
-            // сериализация ответа
-            Response.ContentType = "application/json";
-            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+            
+            return Json(response);
         }
 
         [HttpPost]
-        public IActionResult Refresh(string token, string refreshToken)
+        public JsonResult Refresh(string token, string refreshToken)
         {
             var principal = JwtHelper.GetPrincipalFromExpiredToken(token);
             var username = principal.Identity.Name;
@@ -85,7 +83,7 @@ namespace TokenApp.Controllers
             _refreshTokenRepository.Delete(username, refreshToken);
             _refreshTokenRepository.Save(username, newRefreshToken);
 
-            return new ObjectResult(new
+            return Json(new
             {
                 token = newJwtToken,
                 refreshToken = newRefreshToken
