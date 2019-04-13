@@ -61,6 +61,9 @@ namespace TokenApp.Controllers
             var encodedJwt = JwtHelper.GenerateToken(identity.Claims);
             var refreshToken = RefreshTokenHelper.GenerateRefreshToken();
 
+            _refreshTokenRepository.Delete(username);
+            _refreshTokenRepository.Save(username, refreshToken);
+
             var response = new
             {
                 accessToken = encodedJwt,

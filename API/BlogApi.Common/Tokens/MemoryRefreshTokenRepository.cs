@@ -10,6 +10,16 @@ namespace BlogApi.Common.Tokens
     {
         private static BlockingCollection<UserRefreshToken> _userRefreshTokens;
 
+        public void Delete(string username)
+        {
+            var userRefreshToken = Get(username);
+
+            if (!string.IsNullOrEmpty(userRefreshToken))
+            {
+                Delete(username, userRefreshToken);
+            }
+        }
+
         public void Delete(string username, string refreshToken)
         {
             var tokenToDelete = _userRefreshTokens.FirstOrDefault(x => x.UserName == username);
