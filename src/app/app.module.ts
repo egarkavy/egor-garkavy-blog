@@ -10,6 +10,9 @@ import { HomeComponent } from './components/home/home.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
 import { FormsModule } from '@angular/forms'
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './interceptors/token.interceptor';
+
 @NgModule({
   imports: [
     BrowserModule, 
@@ -22,6 +25,13 @@ import { FormsModule } from '@angular/forms'
   declarations: [
     AppComponent,
     HomeComponent
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [ AppComponent ]
 })
