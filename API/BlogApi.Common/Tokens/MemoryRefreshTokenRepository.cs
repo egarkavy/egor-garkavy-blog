@@ -8,7 +8,7 @@ namespace BlogApi.Common.Tokens
 {
     public class MemoryRefreshTokenRepository : IRefreshTokenRepository
     {
-        private static BlockingCollection<UserRefreshToken> _userRefreshTokens;
+        private static BlockingCollection<UserRefreshToken> _userRefreshTokens = new BlockingCollection<UserRefreshToken>();
 
         public void Delete(string username)
         {

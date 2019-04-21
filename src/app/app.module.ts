@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms'
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { UrlInterceptor } from './interceptors/url.interceptor';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { UrlInterceptor } from './interceptors/url.interceptor';
     HomeComponent
   ],
   providers: [
+    AuthService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: UrlInterceptor,

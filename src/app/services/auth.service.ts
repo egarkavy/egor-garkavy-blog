@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { tokenNotExpired } from 'angular2-jwt';
 import { Observable } from 'rxjs/internal/Observable';
 import { of } from 'rxjs/internal/observable/of';
 import { HttpClient } from '@angular/common/http';
@@ -8,36 +7,39 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class AuthService {
   private tokenKey = "token";
+  private refreshTokenKey = "refreshToken"
   constructor(private http: HttpClient) {
 
   }
   
   public getAuthToken(): string {
-    return localStorage.getItem('token');
+    return localStorage.getItem(this.tokenKey);
   }
 
   public getRefreshToken(): string {
-    return localStorage.getItem('refreshToken');
-  }
-
-  public isAuthenticated(): boolean {
-    const token = this.getAuthToken();
-    
-    return tokenNotExpired(null, token);
+    return localStorage.getItem(this.refreshTokenKey);
   }
 
   public getAccessToken(username: string, password: string) : Observable<any> {
-    return this.http.post<any>("account/token", {username, password})
+    return this.http.post<any>("/account/token", {username, password})
       .pipe(map(response => { //handle error
-          sessionStorage.setItem(this.tokenKey, response.access_token);
+        this.setTokens(response.accessToken, response.refreshToken);
           return response;
       }));
   }
 
   public refreshAccessToken(): Observable<any> {
-    return this.http.post("/account/refresh", {
+    return this.http.post<any>("/account/refresh", {
       token: this.getAuthToken(),
       refreshToken: this.getRefreshToken()
-    });
+    }).pipe(map(response => {
+      this.setTokens(response.accessToken, response.refreshToken);
+      return response;
+    }));
+  }
+
+  private setTokens(access: string, refresh: string) : void {
+    localStorage.setItem(this.tokenKey, access);
+    localStorage.setItem(this.refreshTokenKey, refresh);
   }
 }

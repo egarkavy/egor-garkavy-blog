@@ -29,21 +29,6 @@ export class HomeComponent{
         .subscribe(response => {
             debugger;
             console.log(response);
-        })
-
-        this.http.post<any>("/account/Token", loginData)
-        .subscribe(x => {
-            debugger;
-            sessionStorage.setItem(tokenKey, x.access_token);
-
-            this.http.get<any>("/values/GetRole", {
-                    headers: {
-                        Authorization: "Bearer " + sessionStorage.getItem(tokenKey)
-                }})
-                .subscribe(x => {
-                    debugger;
-                    console.log("test");
-                })
         });
     }
 
