@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
+import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: 'home',
@@ -10,7 +11,7 @@ import { NgForm } from '@angular/forms';
     styleUrls: ['./home.component.scss']
 })
 export class HomeComponent{ 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private authService : AuthService) {
        
     }
 
@@ -24,12 +25,18 @@ export class HomeComponent{
             password: f.value.pass
         };
         
-        this.http.post<any>("http://localhost:60000/api/account/Token", loginData)
+        this.authService.getAccessToken(loginData.username, loginData.password)
+        .subscribe(response => {
+            debugger;
+            console.log(response);
+        })
+
+        this.http.post<any>("/account/Token", loginData)
         .subscribe(x => {
             debugger;
             sessionStorage.setItem(tokenKey, x.access_token);
 
-            this.http.get<any>("http://localhost:60000/api/values/GetRole", {
+            this.http.get<any>("/values/GetRole", {
                     headers: {
                         Authorization: "Bearer " + sessionStorage.getItem(tokenKey)
                 }})

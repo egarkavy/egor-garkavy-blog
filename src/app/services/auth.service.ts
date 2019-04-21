@@ -30,6 +30,7 @@ export class AuthService {
     return this.http.post<any>("account/token", {username, password})
       .pipe(map(response => { //handle error
           sessionStorage.setItem(this.tokenKey, response.access_token);
+          return response;
       }));
   }
 
@@ -37,6 +38,6 @@ export class AuthService {
     return this.http.post("/account/refresh", {
       token: this.getAuthToken(),
       refreshToken: this.getRefreshToken()
-    })
+    });
   }
 }
