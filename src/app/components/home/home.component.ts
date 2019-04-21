@@ -46,4 +46,12 @@ export class HomeComponent{
                 })
         });
     }
+
+    onProtectedCall() {
+        this.http.get<any>("/values/GetRole")
+        .subscribe(response => {
+            debugger;
+            console.log(response);
+        })
+    }
 }
