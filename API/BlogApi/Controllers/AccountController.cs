@@ -64,19 +64,22 @@ namespace TokenApp.Controllers
             _refreshTokenRepository.Delete(username);
             _refreshTokenRepository.Save(username, refreshToken);
 
-            var response = new
+            var response = new AppTokenModel
             {
-                accessToken = encodedJwt,
-                refreshToken = refreshToken,
-                username = identity.Name
+                AccessToken = encodedJwt,
+                RefreshToken = refreshToken,
+                Username = identity.Name
             };
             
             return Json(response);
         }
 
-        [HttpPost]
-        public JsonResult Refresh(string token, string refreshToken)
+        [HttpPost("Refresh")]
+        public JsonResult Refresh([FromBody]AppTokenModel refreshModel)
         {
+            var token = refreshModel.AccessToken;
+            var refreshToken = refreshModel.RefreshToken;
+
             var principal = JwtHelper.GetPrincipalFromExpiredToken(token);
             var username = principal.Identity.Name;
             var savedRefreshToken = _refreshTokenRepository.Get(username); //retrieve the refresh token from a data store
@@ -88,11 +91,18 @@ namespace TokenApp.Controllers
             _refreshTokenRepository.Delete(username, refreshToken);
             _refreshTokenRepository.Save(username, newRefreshToken);
 
-            return Json(new
+            return Json(new AppTokenModel
             {
-                token = newJwtToken,
-                refreshToken = newRefreshToken
+                AccessToken = newJwtToken,
+                RefreshToken = newRefreshToken
             });
+        }
+
+        public class AppTokenModel
+        {
+            public string AccessToken { get; set; }
+            public string RefreshToken { get; set; }
+            public string Username { get; set; }
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)

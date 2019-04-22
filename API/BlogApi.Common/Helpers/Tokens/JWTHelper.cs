@@ -15,6 +15,8 @@ namespace BlogApi.Services.Helpers.Tokens
             {
                 ValidateAudience = true, //you might dont want to validate the audience and issuer depending on your use case
                 ValidateIssuer = true,
+                ValidAudience = Constants.AUDIENCE,
+                ValidIssuer = Constants.ISSUER,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = Constants.GetSymmetricSecurityKey(),
                 ValidateLifetime = false //to allow expired token be validated

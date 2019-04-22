@@ -30,7 +30,7 @@ export class AuthService {
 
   public refreshAccessToken(): Observable<any> {
     return this.http.post<any>("/account/refresh", {
-      token: this.getAuthToken(),
+      accessToken: this.getAuthToken(),
       refreshToken: this.getRefreshToken()
     }).pipe(map(response => {
       this.setTokens(response.accessToken, response.refreshToken);
